@@ -1,0 +1,52 @@
+{
+  "validation_passed": true,
+  "validation_failures": [],
+  "code_statistics": [
+    {
+      "channel": "data",
+      "prn": 1,
+      "length": 10230,
+      "ones": 5115,
+      "zeros": 5115,
+      "balance_error": 0,
+      "bipolar_mean": 0.0
+    },
+    {
+      "channel": "pilot",
+      "prn": 1,
+      "length": 10230,
+      "ones": 5115,
+      "zeros": 5115,
+      "balance_error": 0,
+      "bipolar_mean": 0.0
+    }
+  ],
+  "correlation_metrics": [
+    {
+      "channel": "data",
+      "pair": "PRN1-PRN1",
+      "peak": 0.9999999999999998,
+      "max_abs_sidelobe": 0.027174975562072337,
+      "rms_sidelobe": 0.009025930102743177
+    },
+    {
+      "channel": "data",
+      "pair": "PRN1-PRN2",
+      "max_abs_crosscorr": 0.03812316715542521,
+      "rms_crosscorr": 0.009871184203084393,
+      "mean_crosscorr": -5.426309993280335e-21
+    },
+    {
+      "channel": "pilot",
+      "pair": "PRN1-PRN1",
+      "peak": 1.0,
+      "max_abs_sidelobe": 0.026392961876832845,
+      "rms_sidelobe": 0.009062058216494806
+    }
+  ],
+  "primary_code_length": 10230,
+  "available_channels": [
+    "data",
+    "pilot"
+  ]
+}

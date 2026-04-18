@@ -1,0 +1,39 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug carrier_sync_lab",
+      "type": "cppdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}/build/debug-mingw/carrier_sync_lab.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}",
+      "environment": [
+        {
+          "name": "PATH",
+          "value": "${workspaceFolder}\\tools\\Qt6\\6.5.3\\mingw_64\\bin;${workspaceFolder}\\tools\\Qt6\\Tools\\mingw1120_64\\mingw64\\bin;${workspaceFolder}\\.venv\\Scripts;${env:PATH}"
+        },
+        {
+          "name": "QT_PLUGIN_PATH",
+          "value": "${workspaceFolder}\\build\\debug-mingw"
+        },
+        {
+          "name": "QT_QPA_PLATFORM_PLUGIN_PATH",
+          "value": "${workspaceFolder}\\build\\debug-mingw\\platforms"
+        }
+      ],
+      "externalConsole": false,
+      "MIMode": "gdb",
+      "miDebuggerPath": "${workspaceFolder}/tools/Qt6/Tools/mingw1120_64/mingw64/bin/gdb.exe",
+      "preLaunchTask": "Build Debug",
+      "setupCommands": [
+        {
+          "description": "Enable pretty printing",
+          "text": "-enable-pretty-printing",
+          "ignoreFailures": true
+        }
+      ]
+    }
+  ]
+}

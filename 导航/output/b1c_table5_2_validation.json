@@ -1,0 +1,642 @@
+{
+  "summary": {
+    "table": "5-2",
+    "description": "B1C data primary-code validation against ICD table 5-2",
+    "total_prns": 63,
+    "passed_prns": 63,
+    "failed_prns": 0,
+    "all_passed": true
+  },
+  "details": [
+    {
+      "prn": 1,
+      "head_ref_octal": "53773116",
+      "head_calc_octal": "53773116",
+      "head_match": true,
+      "tail_ref_octal": "42711657",
+      "tail_calc_octal": "42711657",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 2,
+      "head_ref_octal": "32235341",
+      "head_calc_octal": "32235341",
+      "head_match": true,
+      "tail_ref_octal": "17306122",
+      "tail_calc_octal": "17306122",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 3,
+      "head_ref_octal": "17633713",
+      "head_calc_octal": "17633713",
+      "head_match": true,
+      "tail_ref_octal": "01145221",
+      "tail_calc_octal": "01145221",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 4,
+      "head_ref_octal": "41551514",
+      "head_calc_octal": "41551514",
+      "head_match": true,
+      "tail_ref_octal": "05307430",
+      "tail_calc_octal": "05307430",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 5,
+      "head_ref_octal": "17205134",
+      "head_calc_octal": "17205134",
+      "head_match": true,
+      "tail_ref_octal": "46341377",
+      "tail_calc_octal": "46341377",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 6,
+      "head_ref_octal": "04254545",
+      "head_calc_octal": "04254545",
+      "head_match": true,
+      "tail_ref_octal": "60604443",
+      "tail_calc_octal": "60604443",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 7,
+      "head_ref_octal": "70663435",
+      "head_calc_octal": "70663435",
+      "head_match": true,
+      "tail_ref_octal": "50500234",
+      "tail_calc_octal": "50500234",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 8,
+      "head_ref_octal": "16701045",
+      "head_calc_octal": "16701045",
+      "head_match": true,
+      "tail_ref_octal": "27476454",
+      "tail_calc_octal": "27476454",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 9,
+      "head_ref_octal": "32132263",
+      "head_calc_octal": "32132263",
+      "head_match": true,
+      "tail_ref_octal": "70555612",
+      "tail_calc_octal": "70555612",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 10,
+      "head_ref_octal": "25432015",
+      "head_calc_octal": "25432015",
+      "head_match": true,
+      "tail_ref_octal": "43004057",
+      "tail_calc_octal": "43004057",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 11,
+      "head_ref_octal": "31711760",
+      "head_calc_octal": "31711760",
+      "head_match": true,
+      "tail_ref_octal": "07100551",
+      "tail_calc_octal": "07100551",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 12,
+      "head_ref_octal": "25604267",
+      "head_calc_octal": "25604267",
+      "head_match": true,
+      "tail_ref_octal": "15703521",
+      "tail_calc_octal": "15703521",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 13,
+      "head_ref_octal": "65705054",
+      "head_calc_octal": "65705054",
+      "head_match": true,
+      "tail_ref_octal": "12615632",
+      "tail_calc_octal": "12615632",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 14,
+      "head_ref_octal": "24700370",
+      "head_calc_octal": "24700370",
+      "head_match": true,
+      "tail_ref_octal": "14267226",
+      "tail_calc_octal": "14267226",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 15,
+      "head_ref_octal": "72405456",
+      "head_calc_octal": "72405456",
+      "head_match": true,
+      "tail_ref_octal": "25330122",
+      "tail_calc_octal": "25330122",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 16,
+      "head_ref_octal": "02621063",
+      "head_calc_octal": "02621063",
+      "head_match": true,
+      "tail_ref_octal": "15741134",
+      "tail_calc_octal": "15741134",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 17,
+      "head_ref_octal": "00506754",
+      "head_calc_octal": "00506754",
+      "head_match": true,
+      "tail_ref_octal": "62665617",
+      "tail_calc_octal": "62665617",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 18,
+      "head_ref_octal": "44317266",
+      "head_calc_octal": "44317266",
+      "head_match": true,
+      "tail_ref_octal": "07251312",
+      "tail_calc_octal": "07251312",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 19,
+      "head_ref_octal": "14463723",
+      "head_calc_octal": "14463723",
+      "head_match": true,
+      "tail_ref_octal": "26526763",
+      "tail_calc_octal": "26526763",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 20,
+      "head_ref_octal": "70234110",
+      "head_calc_octal": "70234110",
+      "head_match": true,
+      "tail_ref_octal": "33737311",
+      "tail_calc_octal": "33737311",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 21,
+      "head_ref_octal": "62002462",
+      "head_calc_octal": "62002462",
+      "head_match": true,
+      "tail_ref_octal": "34564677",
+      "tail_calc_octal": "34564677",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 22,
+      "head_ref_octal": "52312612",
+      "head_calc_octal": "52312612",
+      "head_match": true,
+      "tail_ref_octal": "30142557",
+      "tail_calc_octal": "30142557",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 23,
+      "head_ref_octal": "34500023",
+      "head_calc_octal": "34500023",
+      "head_match": true,
+      "tail_ref_octal": "52015335",
+      "tail_calc_octal": "52015335",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 24,
+      "head_ref_octal": "77312776",
+      "head_calc_octal": "77312776",
+      "head_match": true,
+      "tail_ref_octal": "56550366",
+      "tail_calc_octal": "56550366",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 25,
+      "head_ref_octal": "03712305",
+      "head_calc_octal": "03712305",
+      "head_match": true,
+      "tail_ref_octal": "04531416",
+      "tail_calc_octal": "04531416",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 26,
+      "head_ref_octal": "02501573",
+      "head_calc_octal": "02501573",
+      "head_match": true,
+      "tail_ref_octal": "00717773",
+      "tail_calc_octal": "00717773",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 27,
+      "head_ref_octal": "66632544",
+      "head_calc_octal": "66632544",
+      "head_match": true,
+      "tail_ref_octal": "65070030",
+      "tail_calc_octal": "65070030",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 28,
+      "head_ref_octal": "00447425",
+      "head_calc_octal": "00447425",
+      "head_match": true,
+      "tail_ref_octal": "65742570",
+      "tail_calc_octal": "65742570",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 29,
+      "head_ref_octal": "50643132",
+      "head_calc_octal": "50643132",
+      "head_match": true,
+      "tail_ref_octal": "47674377",
+      "tail_calc_octal": "47674377",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 30,
+      "head_ref_octal": "75652754",
+      "head_calc_octal": "75652754",
+      "head_match": true,
+      "tail_ref_octal": "45534064",
+      "tail_calc_octal": "45534064",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 31,
+      "head_ref_octal": "40610704",
+      "head_calc_octal": "40610704",
+      "head_match": true,
+      "tail_ref_octal": "03636755",
+      "tail_calc_octal": "03636755",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 32,
+      "head_ref_octal": "60523643",
+      "head_calc_octal": "60523643",
+      "head_match": true,
+      "tail_ref_octal": "52040645",
+      "tail_calc_octal": "52040645",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 33,
+      "head_ref_octal": "30522043",
+      "head_calc_octal": "30522043",
+      "head_match": true,
+      "tail_ref_octal": "36645510",
+      "tail_calc_octal": "36645510",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 34,
+      "head_ref_octal": "06337743",
+      "head_calc_octal": "06337743",
+      "head_match": true,
+      "tail_ref_octal": "54551553",
+      "tail_calc_octal": "54551553",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 35,
+      "head_ref_octal": "41375664",
+      "head_calc_octal": "41375664",
+      "head_match": true,
+      "tail_ref_octal": "26065254",
+      "tail_calc_octal": "26065254",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 36,
+      "head_ref_octal": "20200053",
+      "head_calc_octal": "20200053",
+      "head_match": true,
+      "tail_ref_octal": "03373656",
+      "tail_calc_octal": "03373656",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 37,
+      "head_ref_octal": "22017103",
+      "head_calc_octal": "22017103",
+      "head_match": true,
+      "tail_ref_octal": "15754234",
+      "tail_calc_octal": "15754234",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 38,
+      "head_ref_octal": "67327102",
+      "head_calc_octal": "67327102",
+      "head_match": true,
+      "tail_ref_octal": "36032344",
+      "tail_calc_octal": "36032344",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 39,
+      "head_ref_octal": "07154144",
+      "head_calc_octal": "07154144",
+      "head_match": true,
+      "tail_ref_octal": "00456573",
+      "tail_calc_octal": "00456573",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 40,
+      "head_ref_octal": "45367715",
+      "head_calc_octal": "45367715",
+      "head_match": true,
+      "tail_ref_octal": "20772116",
+      "tail_calc_octal": "20772116",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 41,
+      "head_ref_octal": "46775773",
+      "head_calc_octal": "46775773",
+      "head_match": true,
+      "tail_ref_octal": "04657766",
+      "tail_calc_octal": "04657766",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 42,
+      "head_ref_octal": "37123271",
+      "head_calc_octal": "37123271",
+      "head_match": true,
+      "tail_ref_octal": "11652043",
+      "tail_calc_octal": "11652043",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 43,
+      "head_ref_octal": "34054132",
+      "head_calc_octal": "34054132",
+      "head_match": true,
+      "tail_ref_octal": "63673657",
+      "tail_calc_octal": "63673657",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 44,
+      "head_ref_octal": "36632600",
+      "head_calc_octal": "36632600",
+      "head_match": true,
+      "tail_ref_octal": "06140620",
+      "tail_calc_octal": "06140620",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 45,
+      "head_ref_octal": "43776172",
+      "head_calc_octal": "43776172",
+      "head_match": true,
+      "tail_ref_octal": "42103455",
+      "tail_calc_octal": "42103455",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 46,
+      "head_ref_octal": "13675272",
+      "head_calc_octal": "13675272",
+      "head_match": true,
+      "tail_ref_octal": "71143561",
+      "tail_calc_octal": "71143561",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 47,
+      "head_ref_octal": "53755564",
+      "head_calc_octal": "53755564",
+      "head_match": true,
+      "tail_ref_octal": "07122624",
+      "tail_calc_octal": "07122624",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 48,
+      "head_ref_octal": "60621674",
+      "head_calc_octal": "60621674",
+      "head_match": true,
+      "tail_ref_octal": "32065524",
+      "tail_calc_octal": "32065524",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 49,
+      "head_ref_octal": "22415634",
+      "head_calc_octal": "22415634",
+      "head_match": true,
+      "tail_ref_octal": "47205733",
+      "tail_calc_octal": "47205733",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 50,
+      "head_ref_octal": "37363473",
+      "head_calc_octal": "37363473",
+      "head_match": true,
+      "tail_ref_octal": "71732000",
+      "tail_calc_octal": "71732000",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 51,
+      "head_ref_octal": "77262176",
+      "head_calc_octal": "77262176",
+      "head_match": true,
+      "tail_ref_octal": "11057010",
+      "tail_calc_octal": "11057010",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 52,
+      "head_ref_octal": "57132462",
+      "head_calc_octal": "57132462",
+      "head_match": true,
+      "tail_ref_octal": "60447016",
+      "tail_calc_octal": "60447016",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 53,
+      "head_ref_octal": "13314107",
+      "head_calc_octal": "13314107",
+      "head_match": true,
+      "tail_ref_octal": "77551540",
+      "tail_calc_octal": "77551540",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 54,
+      "head_ref_octal": "54474504",
+      "head_calc_octal": "54474504",
+      "head_match": true,
+      "tail_ref_octal": "54256322",
+      "tail_calc_octal": "54256322",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 55,
+      "head_ref_octal": "76023074",
+      "head_calc_octal": "76023074",
+      "head_match": true,
+      "tail_ref_octal": "61777241",
+      "tail_calc_octal": "61777241",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 56,
+      "head_ref_octal": "60652454",
+      "head_calc_octal": "60652454",
+      "head_match": true,
+      "tail_ref_octal": "37175533",
+      "tail_calc_octal": "37175533",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 57,
+      "head_ref_octal": "31371623",
+      "head_calc_octal": "31371623",
+      "head_match": true,
+      "tail_ref_octal": "00254400",
+      "tail_calc_octal": "00254400",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 58,
+      "head_ref_octal": "52134040",
+      "head_calc_octal": "52134040",
+      "head_match": true,
+      "tail_ref_octal": "51277171",
+      "tail_calc_octal": "51277171",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 59,
+      "head_ref_octal": "41013755",
+      "head_calc_octal": "41013755",
+      "head_match": true,
+      "tail_ref_octal": "57767521",
+      "tail_calc_octal": "57767521",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 60,
+      "head_ref_octal": "20323763",
+      "head_calc_octal": "20323763",
+      "head_match": true,
+      "tail_ref_octal": "60063316",
+      "tail_calc_octal": "60063316",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 61,
+      "head_ref_octal": "52445270",
+      "head_calc_octal": "52445270",
+      "head_match": true,
+      "tail_ref_octal": "12771226",
+      "tail_calc_octal": "12771226",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 62,
+      "head_ref_octal": "50735662",
+      "head_calc_octal": "50735662",
+      "head_match": true,
+      "tail_ref_octal": "51142373",
+      "tail_calc_octal": "51142373",
+      "tail_match": true,
+      "passed": true
+    },
+    {
+      "prn": 63,
+      "head_ref_octal": "27571255",
+      "head_calc_octal": "27571255",
+      "head_match": true,
+      "tail_ref_octal": "47160627",
+      "tail_calc_octal": "47160627",
+      "tail_match": true,
+      "passed": true
+    }
+  ]
+}

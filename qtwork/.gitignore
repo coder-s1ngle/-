@@ -1,0 +1,13 @@
+.venv/
+build/
+downloads/
+tools/
+_probe_build/
+_probe6_build/
+*.obj
+*.o
+*.exe
+*.ilk
+*.pdb
+*.user
+CMakeUserPresets.json

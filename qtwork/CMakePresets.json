@@ -1,0 +1,52 @@
+{
+  "version": 6,
+  "cmakeMinimumRequired": {
+    "major": 3,
+    "minor": 24,
+    "patch": 0
+  },
+  "configurePresets": [
+    {
+      "name": "windows-mingw-debug",
+      "displayName": "Windows MinGW Debug",
+      "generator": "MinGW Makefiles",
+      "binaryDir": "${sourceDir}/build/debug-mingw",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Debug",
+        "CMAKE_CXX_COMPILER": "${sourceDir}/tools/Qt6/Tools/mingw1120_64/mingw64/bin/g++.exe",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_PREFIX_PATH": "${sourceDir}/tools/Qt6/6.5.3/mingw_64"
+      },
+      "environment": {
+        "PATH": "${sourceDir}/tools/Qt6/6.5.3/mingw_64/bin;${sourceDir}/tools/Qt6/Tools/mingw1120_64/mingw64/bin;${sourceDir}/.venv/Scripts;$penv{PATH}"
+      }
+    },
+    {
+      "name": "windows-mingw-release",
+      "displayName": "Windows MinGW Release",
+      "generator": "MinGW Makefiles",
+      "binaryDir": "${sourceDir}/build/release-mingw",
+      "cacheVariables": {
+        "CMAKE_BUILD_TYPE": "Release",
+        "CMAKE_CXX_COMPILER": "${sourceDir}/tools/Qt6/Tools/mingw1120_64/mingw64/bin/g++.exe",
+        "CMAKE_EXPORT_COMPILE_COMMANDS": "ON",
+        "CMAKE_PREFIX_PATH": "${sourceDir}/tools/Qt6/6.5.3/mingw_64"
+      },
+      "environment": {
+        "PATH": "${sourceDir}/tools/Qt6/6.5.3/mingw_64/bin;${sourceDir}/tools/Qt6/Tools/mingw1120_64/mingw64/bin;${sourceDir}/.venv/Scripts;$penv{PATH}"
+      }
+    }
+  ],
+  "buildPresets": [
+    {
+      "name": "windows-mingw-debug",
+      "configurePreset": "windows-mingw-debug",
+      "jobs": 8
+    },
+    {
+      "name": "windows-mingw-release",
+      "configurePreset": "windows-mingw-release",
+      "jobs": 8
+    }
+  ]
+}
