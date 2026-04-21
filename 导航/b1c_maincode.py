@@ -17,6 +17,7 @@ CHANNEL_TABLES = {
     "data": DATA_PRIMARY_PARAMS,
     "pilot": PILOT_PRIMARY_PARAMS,
 }
+VALIDATION_SAMPLE_PRNS = (1, 2, 3, 10, 20, 30, 40, 50, 63)
 
 
 def octal24_to_bits(octal_word: str) -> np.ndarray:
@@ -27,6 +28,15 @@ def octal24_to_bits(octal_word: str) -> np.ndarray:
         # 每个八进制位对应 3 个二进制位，因此 8 位八进制正好展开为 24 个码片。
         bits.extend(((value >> 2) & 1, (value >> 1) & 1, value & 1))
     return np.array(bits, dtype=np.uint8)
+
+
+def bits_to_octal(bits: np.ndarray) -> str:
+    """Convert 24 chips into an 8-digit octal string, MSB first."""
+    digits = []
+    for idx in range(0, 24, 3):
+        value = (int(bits[idx]) << 2) | (int(bits[idx + 1]) << 1) | int(bits[idx + 2])
+        digits.append(str(value))
+    return "".join(digits)
 
 
 @lru_cache(maxsize=1)
@@ -108,18 +118,90 @@ def aperiodic_correlation(code_a: np.ndarray, code_b: np.ndarray | None = None) 
     return lags, corr / norm
 
 
-def validate_primary_codes() -> list[str]:
-    """Check all 126 primary codes against ICD head/tail octal values."""
-    failures = []
+def observation_window(code: np.ndarray, start: int, length: int) -> np.ndarray:
+    """Extract a length-L observation window from a periodic primary code."""
+    if length <= 0:
+        raise ValueError("length must be positive")
+    seq = to_bipolar(code)
+    if length > len(seq):
+        raise ValueError("length must not exceed the code length")
+    start %= len(seq)
+    return np.roll(seq, -start)[:length]
+
+
+def windowed_capture_correlation(
+    observation: np.ndarray, local_code: np.ndarray
+) -> tuple[np.ndarray, np.ndarray]:
+    """Search a short observation window against a full local code over all code phases."""
+    obs = to_bipolar(observation)
+    ref = to_bipolar(local_code)
+    if len(obs) > len(ref):
+        raise ValueError("observation length must not exceed the local code length")
+
+    padded = np.zeros(len(ref), dtype=np.float64)
+    padded[: len(obs)] = obs
+    spectrum = np.fft.fft(padded) * np.conj(np.fft.fft(ref))
+    corr = np.fft.ifft(spectrum).real / len(obs)
+    phases = np.arange(len(ref))
+    return phases, corr
+
+
+def validate_primary_codes() -> dict[str, object]:
+    """Check all data/pilot primary codes against ICD head/tail octal values."""
+    failures: list[str] = []
+    channel_summaries: dict[str, dict[str, object]] = {}
+
     for channel, table in CHANNEL_TABLES.items():
+        details: list[dict[str, object]] = []
+        passed = 0
         for prn, (_, _, head_octal, tail_octal) in table.items():
             code = primary_code(prn, channel)
-            # ICD 直接给出了每条主码的前 24 位和末尾 24 位，便于做一致性校验。
-            if not np.array_equal(code[:24], octal24_to_bits(head_octal)):
-                failures.append(f"{channel} PRN{prn} head mismatch")
-            if not np.array_equal(code[-24:], octal24_to_bits(tail_octal)):
-                failures.append(f"{channel} PRN{prn} tail mismatch")
-    return failures
+            head_bits = code[:24]
+            tail_bits = code[-24:]
+            head_calc = bits_to_octal(head_bits)
+            tail_calc = bits_to_octal(tail_bits)
+            head_match = bool(head_calc == head_octal and np.array_equal(head_bits, octal24_to_bits(head_octal)))
+            tail_match = bool(tail_calc == tail_octal and np.array_equal(tail_bits, octal24_to_bits(tail_octal)))
+            row = {
+                "channel": channel,
+                "prn": int(prn),
+                "head_ref_octal": head_octal,
+                "head_calc_octal": head_calc,
+                "head_match": head_match,
+                "tail_ref_octal": tail_octal,
+                "tail_calc_octal": tail_calc,
+                "tail_match": tail_match,
+                "passed": bool(head_match and tail_match),
+            }
+            if row["passed"]:
+                passed += 1
+            else:
+                if not head_match:
+                    failures.append(f"{channel} PRN{prn} head mismatch")
+                if not tail_match:
+                    failures.append(f"{channel} PRN{prn} tail mismatch")
+            details.append(row)
+
+        channel_summaries[channel] = {
+            "channel": channel,
+            "total_prns": len(details),
+            "passed_prns": passed,
+            "failed_prns": len(details) - passed,
+            "all_passed": passed == len(details),
+            "sample_rows": [row for row in details if int(row["prn"]) in VALIDATION_SAMPLE_PRNS],
+            "details": details,
+        }
+
+    total_prns = sum(int(item["total_prns"]) for item in channel_summaries.values())
+    total_passed = sum(int(item["passed_prns"]) for item in channel_summaries.values())
+    return {
+        "validation_passed": not failures,
+        "validation_failures": failures,
+        "total_prns": total_prns,
+        "passed_prns": total_passed,
+        "failed_prns": total_prns - total_passed,
+        "channels": channel_summaries,
+    }
 
 
 def format_preview(code: np.ndarray, chips: int, bipolar: bool) -> str:
@@ -142,13 +224,17 @@ def build_argparser() -> argparse.ArgumentParser:
 def main() -> None:
     args = build_argparser().parse_args()
     if args.validate:
-        failures = validate_primary_codes()
+        validation = validate_primary_codes()
+        failures = validation["validation_failures"]
         if failures:
             print("validation failed")
             for failure in failures:
                 print(failure)
             raise SystemExit(1)
-        print("all 126 B1C primary codes validated against the ICD tables")
+        print(
+            f"all {validation['passed_prns']} B1C primary codes validated against "
+            "ICD tables 5-2 and 5-3"
+        )
         return
 
     code = primary_code(args.prn, args.channel, bipolar=args.bipolar)

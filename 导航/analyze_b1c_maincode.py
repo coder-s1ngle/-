@@ -13,10 +13,12 @@ from b1c_maincode import (
     CHANNEL_TABLES,
     CHIP_RATE_HZ,
     PRIMARY_CODE_LENGTH,
+    observation_window,
     periodic_correlation,
     primary_code,
     to_bipolar,
     validate_primary_codes,
+    windowed_capture_correlation,
 )
 
 OUTPUT_DIR = Path("output_eval")
@@ -24,6 +26,8 @@ REPRESENTATIVE_PRN = 1
 REPRESENTATIVE_PAIR = (1, 2)
 TRUNCATION_LENGTHS = (256, 512, 1023, 2046, 4092, 8192, PRIMARY_CODE_LENGTH)
 PAIR_CHUNK_SIZE = 96
+OBSERVATION_START_COUNT = 8
+REPRESENTATIVE_WINDOW_LENGTH = 1023
 
 
 def ensure_output_dir() -> None:
@@ -153,54 +157,70 @@ def periodic_crosscorrelation_summary(channel: str) -> dict[str, object]:
 def truncation_crosscorrelation_study(channel: str) -> list[dict[str, object]]:
     prns = channel_prns(channel)
     codes = channel_bipolar_codes(channel)
-    pair_a, pair_b = pair_index_arrays(channel)
-    prn_to_idx = {prn: idx for idx, prn in enumerate(prns)}
-    rep_a = prn_to_idx[REPRESENTATIVE_PAIR[0]]
-    rep_b = prn_to_idx[REPRESENTATIVE_PAIR[1]]
+    true_idx = prns.index(REPRESENTATIVE_PRN)
+    true_code = codes[true_idx]
+    fft_codes = np.fft.fft(codes, axis=1)
 
     results: list[dict[str, object]] = []
     for length in TRUNCATION_LENGTHS:
-        truncated = codes[:, :length]
-        nfft = 1 << (2 * length - 2).bit_length()
-        fft_codes = np.fft.fft(truncated, n=nfft, axis=1)
-        fft_reversed = np.fft.fft(truncated[:, ::-1], n=nfft, axis=1)
-        corr_len = 2 * length - 1
+        starts = observation_start_samples()
+        start_metrics: list[dict[str, float | int]] = []
+        for start in starts:
+            obs = observation_window(true_code, start=start, length=length)
+            padded = np.zeros(PRIMARY_CODE_LENGTH, dtype=np.float64)
+            padded[:length] = obs
+            obs_fft = np.fft.fft(padded)
+            corrs = np.fft.ifft(fft_codes * np.conj(obs_fft)[None, :], axis=1).real / length
 
-        pair_metrics: list[dict[str, float | int | str]] = []
-        for start in range(0, len(pair_a), PAIR_CHUNK_SIZE):
-            stop = start + PAIR_CHUNK_SIZE
-            chunk_a = pair_a[start:stop]
-            chunk_b = pair_b[start:stop]
-            products = fft_codes[chunk_a] * fft_reversed[chunk_b]
-            corrs = np.fft.ifft(products, axis=1).real[:, :corr_len] / length
-            maxima = np.max(np.abs(corrs), axis=1)
-            for idx in range(len(chunk_a)):
-                pair_metrics.append(
-                    {
-                        "prn_a": int(prns[chunk_a[idx]]),
-                        "prn_b": int(prns[chunk_b[idx]]),
-                        "max_abs_crosscorr": float(maxima[idx]),
-                    }
-                )
+            correct_corr = corrs[true_idx]
+            correct_phase = int(np.argmax(correct_corr))
+            correct_peak = float(correct_corr[correct_phase])
+            self_pseudopeak = float(np.max(np.delete(np.abs(correct_corr), correct_phase)))
+            wrong_template_peak = float(np.max(np.abs(np.delete(corrs, true_idx, axis=0))))
+            false_peak = max(self_pseudopeak, wrong_template_peak)
+            psr = float(correct_peak / false_peak)
 
-        representative_corr = np.fft.ifft(fft_codes[rep_a] * fft_reversed[rep_b]).real[:corr_len] / length
-        representative_max = float(np.max(np.abs(representative_corr)))
-        worst = max(pair_metrics, key=lambda item: float(item["max_abs_crosscorr"]))
+            start_metrics.append(
+                {
+                    "start": int(start),
+                    "correct_phase": correct_phase,
+                    "correct_peak": correct_peak,
+                    "self_pseudopeak": self_pseudopeak,
+                    "wrong_template_peak": wrong_template_peak,
+                    "capture_false_peak": false_peak,
+                    "psr": psr,
+                    "psr_db": float(20.0 * np.log10(psr)),
+                }
+            )
 
         results.append(
             {
                 "length": int(length),
-                "representative_pair": {
-                    "prn_a": REPRESENTATIVE_PAIR[0],
-                    "prn_b": REPRESENTATIVE_PAIR[1],
-                    "max_abs_crosscorr": representative_max,
-                },
-                "worst_case_pair": worst,
-                "mean_pair_max_abs_crosscorr": float(np.mean([item["max_abs_crosscorr"] for item in pair_metrics])),
+                "window_starts": [int(start) for start in starts],
+                "num_windows": len(start_metrics),
+                "representative_start": start_metrics[0],
+                "worst_false_peak_start": max(start_metrics, key=lambda item: float(item["capture_false_peak"])),
+                "best_psr_start": max(start_metrics, key=lambda item: float(item["psr"])),
+                "correct_peak_mean": float(np.mean([item["correct_peak"] for item in start_metrics])),
+                "correct_peak_min": float(np.min([item["correct_peak"] for item in start_metrics])),
+                "self_pseudopeak_max": float(np.max([item["self_pseudopeak"] for item in start_metrics])),
+                "wrong_template_peak_max": float(np.max([item["wrong_template_peak"] for item in start_metrics])),
+                "capture_false_peak_max": float(np.max([item["capture_false_peak"] for item in start_metrics])),
+                "capture_false_peak_mean": float(np.mean([item["capture_false_peak"] for item in start_metrics])),
+                "psr_mean": float(np.mean([item["psr"] for item in start_metrics])),
+                "psr_min": float(np.min([item["psr"] for item in start_metrics])),
+                "psr_mean_db": float(20.0 * np.log10(np.mean([item["psr"] for item in start_metrics]))),
+                "psr_min_db": float(20.0 * np.log10(np.min([item["psr"] for item in start_metrics]))),
             }
         )
 
     return results
+
+
+def observation_start_samples() -> np.ndarray:
+    return np.unique(
+        np.linspace(0, PRIMARY_CODE_LENGTH - 1, num=OBSERVATION_START_COUNT, endpoint=False, dtype=np.int32)
+    )
 
 
 def power_spectrum(channel: str, nfft: int = 32768) -> tuple[np.ndarray, np.ndarray]:
@@ -302,37 +322,73 @@ def plot_power_spectrum() -> None:
     plt.close(fig)
 
 
-def plot_truncation_crosscorrelation(studies: dict[str, list[dict[str, object]]]) -> None:
-    fig, axes = plt.subplots(2, 1, figsize=(10, 6.2), sharex=True)
+def plot_windowed_capture_search() -> None:
+    fig, axes = plt.subplots(2, 1, figsize=(10, 5.8), sharex=True)
     for axis, channel in zip(axes, ("data", "pilot"), strict=True):
-        study = studies[channel]
-        lengths = [item["length"] for item in study]
-        representative = [item["representative_pair"]["max_abs_crosscorr"] for item in study]
-        worst_case = [item["worst_case_pair"]["max_abs_crosscorr"] for item in study]
-        mean_values = [item["mean_pair_max_abs_crosscorr"] for item in study]
+        obs = observation_window(primary_code(REPRESENTATIVE_PRN, channel, bipolar=True), start=0, length=REPRESENTATIVE_WINDOW_LENGTH)
+        phases, correct = windowed_capture_correlation(obs, primary_code(REPRESENTATIVE_PRN, channel, bipolar=True))
+        _, wrong = windowed_capture_correlation(obs, primary_code(REPRESENTATIVE_PAIR[1], channel, bipolar=True))
 
-        axis.plot(lengths, representative, marker="o", linewidth=1.2, label="PRN1 vs PRN2")
-        axis.plot(lengths, mean_values, marker="s", linewidth=1.2, label="Mean over all PRN pairs")
-        axis.plot(lengths, worst_case, marker="^", linewidth=1.2, label="Worst PRN pair")
-        axis.set_xscale("log", base=2)
-        axis.set_ylabel("Max |R|")
-        axis.set_title(f"Aperiodic cross-correlation after truncation ({channel})")
-        axis.grid(True, which="both", alpha=0.3)
+        axis.plot(phases, correct, linewidth=1.0, label=f"local PRN{REPRESENTATIVE_PRN}")
+        axis.plot(phases, wrong, linewidth=1.0, label=f"local PRN{REPRESENTATIVE_PAIR[1]}")
+        axis.set_ylabel("Normalized value")
+        axis.set_title(
+            f"Windowed capture search, {channel}, L={REPRESENTATIVE_WINDOW_LENGTH}, true PRN{REPRESENTATIVE_PRN}"
+        )
+        axis.grid(True, alpha=0.3)
         axis.legend()
 
-    axes[-1].set_xlabel("Truncation length / chips")
+    axes[-1].set_xlabel("Local code phase / chips")
     fig.tight_layout()
-    fig.savefig(OUTPUT_DIR / "b1c_truncation_crosscorr.png", dpi=180)
+    fig.savefig(OUTPUT_DIR / "b1c_windowed_capture_search.png", dpi=180)
+    plt.close(fig)
+
+
+def plot_windowed_capture_metrics(studies: dict[str, list[dict[str, object]]]) -> None:
+    fig, axes = plt.subplots(2, 2, figsize=(11, 6.6), sharex="col")
+    for row, channel in enumerate(("data", "pilot")):
+        study = studies[channel]
+        lengths = [item["length"] for item in study]
+        correct_min = [item["correct_peak_min"] for item in study]
+        self_pseudo = [item["self_pseudopeak_max"] for item in study]
+        wrong_peak = [item["wrong_template_peak_max"] for item in study]
+        false_peak = [item["capture_false_peak_max"] for item in study]
+        psr_mean_db = [item["psr_mean_db"] for item in study]
+        psr_min_db = [item["psr_min_db"] for item in study]
+
+        axes[row, 0].plot(lengths, correct_min, marker="o", linewidth=1.2, label="Correct peak")
+        axes[row, 0].plot(lengths, self_pseudo, marker="s", linewidth=1.2, label="Self pseudopeak")
+        axes[row, 0].plot(lengths, wrong_peak, marker="^", linewidth=1.2, label="Wrong-template peak")
+        axes[row, 0].plot(lengths, false_peak, marker="d", linewidth=1.2, label="Capture false peak")
+        axes[row, 0].set_xscale("log", base=2)
+        axes[row, 0].set_ylabel("Normalized value")
+        axes[row, 0].set_title(f"Windowed capture peaks ({channel})")
+        axes[row, 0].grid(True, which="both", alpha=0.3)
+        axes[row, 0].legend()
+
+        axes[row, 1].plot(lengths, psr_mean_db, marker="o", linewidth=1.2, label="Mean PSR")
+        axes[row, 1].plot(lengths, psr_min_db, marker="s", linewidth=1.2, label="Worst PSR")
+        axes[row, 1].set_xscale("log", base=2)
+        axes[row, 1].set_ylabel("PSR / dB")
+        axes[row, 1].set_title(f"Windowed capture PSR ({channel})")
+        axes[row, 1].grid(True, which="both", alpha=0.3)
+        axes[row, 1].legend()
+
+    axes[1, 0].set_xlabel("Observation length / chips")
+    axes[1, 1].set_xlabel("Observation length / chips")
+    fig.tight_layout()
+    fig.savefig(OUTPUT_DIR / "b1c_windowed_capture_metrics.png", dpi=180)
     plt.close(fig)
 
 
 def build_summary() -> dict[str, object]:
-    failures = validate_primary_codes()
-    truncation_studies = {channel: truncation_crosscorrelation_study(channel) for channel in CHANNEL_TABLES}
+    validation = validate_primary_codes()
+    capture_studies = {channel: truncation_crosscorrelation_study(channel) for channel in CHANNEL_TABLES}
 
     return {
-        "validation_passed": not failures,
-        "validation_failures": failures,
+        "validation_passed": validation["validation_passed"],
+        "validation_failures": validation["validation_failures"],
+        "validation_summary": validation,
         "primary_code_length": PRIMARY_CODE_LENGTH,
         "chip_rate_hz": CHIP_RATE_HZ,
         "available_channels": sorted(CHANNEL_TABLES),
@@ -341,14 +397,15 @@ def build_summary() -> dict[str, object]:
         "periodic_crosscorrelation_summary": {
             channel: periodic_crosscorrelation_summary(channel) for channel in CHANNEL_TABLES
         },
-        "truncation_crosscorrelation_summary": truncation_studies,
+        "windowed_capture_summary": capture_studies,
         "power_spectrum_summary": {channel: power_spectrum_summary(channel) for channel in CHANNEL_TABLES},
         "figure_files": [
             "b1c_data_pilot_prn1_first_200chips.png",
             "b1c_data_pilot_prn1_autocorrelation.png",
             "b1c_data_pilot_prn1_prn2_crosscorrelation.png",
             "b1c_data_pilot_power_spectrum.png",
-            "b1c_truncation_crosscorr.png",
+            "b1c_windowed_capture_search.png",
+            "b1c_windowed_capture_metrics.png",
         ],
     }
 
@@ -365,7 +422,8 @@ def main() -> None:
     plot_autocorrelation()
     plot_crosscorrelation()
     plot_power_spectrum()
-    plot_truncation_crosscorrelation(summary["truncation_crosscorrelation_summary"])
+    plot_windowed_capture_search()
+    plot_windowed_capture_metrics(summary["windowed_capture_summary"])
     write_summary(summary)
     print(f"analysis artifacts written to {OUTPUT_DIR.resolve()}")
 
